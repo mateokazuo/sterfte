@@ -25,6 +25,7 @@ points <- st_point_on_surface(data$Shape)
 coords <- st_coordinates(points)
 
 geo <- data.frame(
+  # add nationwide point at 0,0
   index = c(0:(nrow(data))),
   code = c("NL01  ", data[[1]]),
   name = c("Nederland", data[[2]]),
