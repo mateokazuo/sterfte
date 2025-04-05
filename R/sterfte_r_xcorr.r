@@ -16,7 +16,6 @@ corr <- function(M1, M2) {
   spear <- rep(0,nrow(M1))
   for (i in 1:nrow(M1)) {
     spear[i] <- cor(M1[i,],M2[i,],method="spearman")
-    if (spear[i]<0.5){print(i)}
   }
   return(spear)
 }
@@ -31,7 +30,6 @@ breaks <- seq(-1, 1, by = 0.05)
 
 bluey <- rgb(0, 255, 255, maxColorValue = 255, alpha = 150)
 orangey<-rgb(255, 140, 0, maxColorValue = 255, alpha = 150)
-# Chi vs others
 
 hist(chiC, xlim = c(-1, 1), breaks = breaks, col = "lightblue", main = "Chi-square")
 hist(eucC, xlim = c(-1, 1), breaks = breaks, col = "lightblue", main = "Euclidean")
