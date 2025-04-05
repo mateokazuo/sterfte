@@ -19,29 +19,10 @@ cosMatrix <- matrix(0, nrow=N, ncol=N)
 helMatrix <- matrix(0, nrow=N, ncol=N)
 jsdMatrix <- matrix(0, nrow=N, ncol=N)
 
-mahalanobis_dist <- function(x, y, full_cov_matrix) {
-  valid_idx <- !is.na(x) & !is.na(y)
-  x <- x[valid_idx]
-  y <- y[valid_idx]
-  
-  if (length(x) == 0) return(NA)  # Avoid errors
-  
-  # Extract covariance submatrix for available causes
-  cov_sub <- full_cov_matrix[valid_idx, valid_idx]
-  
-  # Compute Mahalanobis distance
-  diff <- x - y
-  return(sqrt(t(diff) %*% solve(cov_sub) %*% diff))
-}
-entropy <- function(x) {
-  x <- x / sum(x)
-  x <- x[x > 0]
-  return(-sum(x * log(x)))
-}
 kl_divergence <- function(P, Q) {
   
-  P <- P[P > 0]  # Remove zero values to avoid log(0)
-  Q <- Q[Q > 0]  # Remove zero values to avoid log(0)
+  P <- P[P > 0]
+  Q <- Q[Q > 0]
   
   return(sum(P * log(P / Q), na.rm = TRUE))
 }
@@ -63,7 +44,7 @@ jsd <- function(P, Q) {
   return(-jsd_value)
 }
 hellinger_dist <- function(x, y) {
-  x <- x / sum(x)  # Normalize to probability distributions
+  x <- x / sum(x)
   y <- y / sum(y)
   return(sqrt(sum((sqrt(x) - sqrt(y))^2)) / sqrt(2))
 }
@@ -74,12 +55,10 @@ hel <- function(x, y) {
   h_dist <- sqrt(0.5 * sum((sqrt(x) - sqrt(y))^2))
   return(-h_dist)
 }
-cosine_sim <- function(x, y) {
+cosine <- function(x, y) {
   return(sum(x * y) / (sqrt(sum(x^2)) * sqrt(sum(y^2))))
 }
 
-
-full_cov_matrix <- cov(deaths, use = "pairwise.complete.obs")
 deaths[is.na(deaths)] <- 0
 for (i in 1:N) {
   for (j in 1:N) {
@@ -93,7 +72,7 @@ for (i in 1:N) {
     eucMatrix[i,j] <-  euc(pair[1,], pair[2,])
     
     # Cosine Similarity
-    cosMatrix[i,j] <- cosine_sim(pair[1,], pair[2,])
+    cosMatrix[i,j] <- cosine(pair[1,], pair[2,])
     
     # Hellinger Distance
     helMatrix[i,j] <- hel(pair[1,], pair[2,])
